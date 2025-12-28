@@ -1,4 +1,4 @@
-const README = `# Starwritter — Distribuição Desktop (Electron)
+# Starwritter — Distribuição Desktop (Electron)
 
 Este repositório contém a versão desktop do Starwritter, empacotada com Electron. A aplicação carrega a SPA (home.html) localmente e utiliza um proxy interno para contornar CORS e permitir o uso da FreeAstrologyAPI sem expor a chave no frontend.
 
