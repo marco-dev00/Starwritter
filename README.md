@@ -1,95 +1,79 @@
-Starwritter — Distribuição Desktop (Electron)
+const README = `# Starwritter — Distribuição Desktop (Electron)
 
 Este repositório contém a versão desktop do Starwritter, empacotada com Electron. A aplicação carrega a SPA (home.html) localmente e utiliza um proxy interno para contornar CORS e permitir o uso da FreeAstrologyAPI sem expor a chave no frontend.
 
-Arquitetura
+## Arquitetura
 
-O main.js inicia um servidor Express local.
+- O main.js inicia um servidor Express local.
+- O servidor:
+  - serve os arquivos estáticos da aplicação;
+  - expõe endpoints /api/* que fazem proxy para https://json.freeastrologyapi.com/*.
+- No frontend, o home.html consome a API via /api, evitando problemas de CORS e mantendo a chave fora do código cliente.
 
-Esse servidor:
+## Execução local (recomendado para testes)
 
-serve os arquivos estáticos da aplicação;
+### Opção one-click (Windows)
 
-expõe endpoints /api/* que fazem proxy para https://json.freeastrologyapi.com/*.
-
-No frontend, o home.html consome a API via /api, evitando problemas de CORS e mantendo a chave fora do código cliente.
-
-Execução local (recomendado para testes)
-Opção one-click (Windows)
-
-Basta dar duplo clique em run-starwritter.bat, na raiz do projeto.
+Dê duplo clique em run-starwritter.bat, na raiz do projeto.
 
 O script:
+- verifica se Node.js / NPM estão instalados (abre o instalador se não estiverem);
+- executa npm install automaticamente, se necessário;
+- inicia o app com npm start em uma janela do PowerShell.
 
-verifica se Node.js / NPM estão instalados (abre o instalador se não estiverem);
+### Execução manual
 
-executa npm install automaticamente, se necessário;
-
-inicia o app com npm start em uma janela do PowerShell.
-
-Execução manual
-
-Instale as dependências:
+1. Instale as dependências:
 
 cd starwritter
 npm install
 
-
-Inicie o app em modo desenvolvimento:
+2. Inicie o app em modo desenvolvimento:
 
 npm start
-
 
 Ao iniciar, o Electron abre uma janela apontando para http://localhost:<porta>/home.html.
 A porta é escolhida automaticamente pelo servidor local.
 
-Chave da API (FreeAstrologyAPI)
+## Chave da API (FreeAstrologyAPI)
 
 A chave não fica embutida no frontend por questões de segurança. Existem duas formas de fornecê-la:
 
-Via interface: no modal “Preencher Mapa”, use o campo “Chave API alternativa”. A chave será usada apenas nas requisições.
+- Via interface: no modal “Preencher Mapa”, use o campo “Chave API alternativa”.
+- Via variável de ambiente (recomendado para empacotamento):
 
-Via variável de ambiente (recomendado para empacotamento):
-
-# Windows (PowerShell)
+Windows (PowerShell):
 $env:FREEASTRO_API_KEY = 'SUA_CHAVE'
 npm start
 
-# macOS / Linux
+macOS / Linux:
 export FREEASTRO_API_KEY='SUA_CHAVE'
 npm start
 
-
 Se definida no ambiente, a chave é utilizada diretamente pelo processo do Electron.
 
-Empacotamento
+## Empacotamento
 
 Para gerar instaladores ou binários distribuíveis, o projeto já está preparado para uso com electron-builder.
 
-Scripts de build estão disponíveis via npm run dist.
+- Build disponível via npm run dist.
+- Workflow em .github/workflows/build.yml executa o build em CI e anexa os artefatos como artifacts.
 
-Há um workflow em .github/workflows/build.yml que executa o build em CI e anexa os artefatos como artifacts do workflow.
+O build roda automaticamente ao fazer push para a branch main.
 
-Ao fazer push para a branch main, o build roda automaticamente no GitHub Actions.
+## Observações
 
-Observações
+- O proxy local encaminha o header x-api-key para a FreeAstrologyAPI.
+- Se a chave for informada via interface, ela é repassada nas requisições.
+- É possível publicar o app como site estático (ex.: GitHub Pages), mas nesse caso:
+  - chamadas ficam sujeitas a CORS;
+  - a chave da API ficará exposta no JavaScript.
 
-O proxy local encaminha o header x-api-key para a FreeAstrologyAPI.
+## Status
 
-Se a chave for informada via modal, ela é repassada nas requisições.
-
-É possível publicar o app como site estático (ex.: GitHub Pages), mas nesse caso:
-
-haverá limitação por CORS;
-
-a chave da API ficará exposta no JavaScript.
-
-Status atual
-
-Estrutura Electron funcional
-
-Proxy local implementado
-
-Suporte a variáveis de ambiente para chave da API
-
-Build automatizado via GitHub Actions
+- Estrutura Electron funcional
+- Proxy local implementado
+- Suporte a variável de ambiente para chave da API
+- Build automatizado via GitHub Actions
+- electron-builder configurado
+`;
